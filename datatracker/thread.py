@@ -4,8 +4,8 @@ import os
 import errno
 from datetime import datetime
 
-from datatracker.binance import Binance
-from datatracker.bithumb import Bithumb
+from datatracker.exchanges.binance import Binance
+from datatracker.exchanges.bithumb import Bithumb
 
 
 class Thread(threading.Thread):
@@ -20,7 +20,7 @@ class Thread(threading.Thread):
         response = requests.get(self.API)
         source = None
 
-        print("Starting thread for {}".format(self.source))
+        print("{} - Starting thread for {}".format(timestamp, self.source))
 
         if connect_to_api(response) != 1:
             print("{} - Connection to API {} failed. Refer to the error logs for details.".format(timestamp, self.API))
@@ -28,27 +28,29 @@ class Thread(threading.Thread):
             print("{} - Connection to API {} established.".format(timestamp, self.API))
 
         if self.ID == "BIN":
-            source = Binance()
+            source = Binance(response)
         elif self.ID == "BHB":
-            source = Bithumb()
+            source = Bithumb(response)
 
-        source.pull_data()
+        source.extract_data()
 
         response.close()
+
+        print("{} - Exiting thread for {}".format(timestamp, self.source))
 
 
 def connect_to_api(response):
     try:
         response.raise_for_status()
     except Exception as e:
-        log_error(e, response.headers)
+        log_status_code(e, response.headers)
         response.close()
         return 0
 
     return 1
 
 
-def log_error(status_code, headers):
+def log_status_code(status_code, headers):
     timestamp = datetime.now().replace(microsecond=0)
 
     try:
