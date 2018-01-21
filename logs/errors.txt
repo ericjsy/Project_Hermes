@@ -1,0 +1,6 @@
+[2018-01-20 12:35:31] - 400 Client Error: BAD REQUEST for url: http://api.open-notify.org/iss-pass.json
+ {'Content-Length': '70', 'Server': 'nginx/1.10.3', 'Via': '1.1 vegur', 'Content-Type': 'application/json', 'Date': 'Sat, 20 Jan 2018 20:35:27 GMT', 'Connection': 'keep-alive'}
+[2018-01-20 12:41:04] - 400 Client Error: BAD REQUEST for url: http://api.open-notify.org/iss-pass.json
+ {'Via': '1.1 vegur', 'Date': 'Sat, 20 Jan 2018 20:41:00 GMT', 'Connection': 'keep-alive', 'Content-Type': 'application/json', 'Server': 'nginx/1.10.3', 'Content-Length': '70'}
+[2018-01-20 16:33:51] - 400 Client Error: Bad Request for url: https://api.bithumb.com/public/ticker/%7Bcurrency%7D
+ {'CF-RAY': '3e062f2b7b043b08-YVR', 'Date': 'Sun, 21 Jan 2018 00:33:49 GMT', 'Expect-CT': 'max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"', 'Connection': 'keep-alive', 'Content-Type': 'text/html;charset=UTF-8', 'Set-Cookie': '__cfduid=dc87656e9a3ed6c32a5de2120590ae39f1516494829; expires=Mon, 21-Jan-19 00:33:49 GMT; path=/; domain=.bithumb.com; HttpOnly', 'Content-Length': '1239', 'Server': 'cloudflare'}
