@@ -19,10 +19,11 @@ class Binance():
         try:
             params = config()
 
-            print("{} - Connecting to database...".format(timestamp))
+            print("{0} - Connecting to database...".format(timestamp))
             conn = psycopg2.connect(**params)
             cur = conn.cursor()
 
+            print("{0} - Extracting data...".format(timestamp))
             cur.execute(
                 "INSERT INTO data.raw (symbol, price_change, price_change_percent, prev_close_price, "
                 "last_price, last_qty, bid_price, ask_price, open_price, high_price, low_price, volume, "
@@ -45,7 +46,7 @@ class Binance():
 
             conn.commit()
         except (Exception, psycopg2.DatabaseError) as e:
-            print("{} - Failed to populate database with data. "
+            print("{0} - Failed to populate database with data. "
                   "Refer to the error logs for details.".format(timestamp))
             log_db_code(e)
         finally:
@@ -66,5 +67,5 @@ def log_db_code(error):
             raise
 
     f = open("logs\errors.txt", "a+")
-    f.write("[{}] - {}\n".format(timestamp, error))
+    f.write("[{0}] - {1}\n".format(timestamp, error))
     f.close()
