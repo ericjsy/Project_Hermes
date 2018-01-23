@@ -20,23 +20,23 @@ class Thread(threading.Thread):
         response = requests.get(self.API)
         source = None
 
-        print("{} - Starting thread for {}".format(timestamp, self.source))
+        print("{0} - Starting thread for {1}".format(timestamp, self.source))
 
         if connect_to_api(response) != 1:
-            print("{} - Connection to API {} failed. Refer to the error logs for details.".format(timestamp, self.API))
+            print("{0} - Connection to API {1} failed. Refer to the error logs for details.".format(timestamp, self.API))
         else:
-            print("{} - Connection to API {} established.".format(timestamp, self.API))
+            print("{0} - Connection to API {1} established.".format(timestamp, self.API))
 
-        if self.ID == "BIN":
-            source = Binance(response)
-        elif self.ID == "BHB":
-            source = Bithumb(response)
+            if self.ID == "BIN":
+                source = Binance(response)
+            elif self.ID == "BHB":
+                source = Bithumb(response)
 
-        source.extract_data()
+            source.extract_data()
 
         response.close()
 
-        print("{} - Exiting thread for {}".format(timestamp, self.source))
+        print("{0} - Exiting thread for {1}".format(timestamp, self.source))
 
 
 def connect_to_api(response):
@@ -60,5 +60,5 @@ def log_status_code(status_code, headers):
             raise
 
     f = open("logs\errors.txt", "a+")
-    f.write("[{}] - {}\n {}\n".format(timestamp, status_code, headers))
+    f.write("[{0}] - {1}\n {2}\n".format(timestamp, status_code, headers))
     f.close()
