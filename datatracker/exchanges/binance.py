@@ -14,7 +14,6 @@ class Binance():
         timestamp = datetime.now().replace(microsecond=0)
 
         conn = None
-        cur = None
 
         try:
             params = config()
@@ -53,9 +52,6 @@ class Binance():
             if conn is not None:
                 conn.close()
 
-            if cur is not None:
-                cur.close()
-
 
 def log_db_code(error):
     timestamp = datetime.now().replace(microsecond=0)
@@ -67,5 +63,5 @@ def log_db_code(error):
             raise
 
     f = open("logs\errors.txt", "a+")
-    f.write("[{0}] - {1}\n".format(timestamp, error))
+    f.write("[{0}] - {1}".format(timestamp, error))
     f.close()
