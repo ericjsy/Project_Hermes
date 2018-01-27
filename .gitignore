@@ -1,3 +1,4 @@
 tests/
 .idea/
+datatracker/__pycache__/*
 
