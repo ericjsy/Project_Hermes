@@ -1,9 +1,10 @@
+#!/usr/bin/python
+
 import threading
 import requests
 import os
 import errno
 from datetime import datetime
-
 from datatracker.exchanges.binance import Binance
 from datatracker.exchanges.bithumb import Bithumb
 

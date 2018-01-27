@@ -1,3 +1,10 @@
+#!/usr/bin/python
+
+"""Configure database connection settings.
+
+Passes on the connection string to the
+"""
+
 from configparser import ConfigParser
 
 
