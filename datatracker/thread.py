@@ -22,17 +22,21 @@ class Thread(threading.Thread):
 
         print("{0} - Starting thread for {1}".format(timestamp, self.source))
 
-        if connect_to_api(response) != 1:
-            print("{0} - Connection to API {1} failed. Refer to the error logs for details.".format(timestamp, self.API))
-        else:
+        if connect_to_api(response) == 1:
             print("{0} - Connection to API {1} established.".format(timestamp, self.API))
 
             if self.ID == "BIN":
                 source = Binance(response)
             elif self.ID == "BHB":
                 source = Bithumb(response)
+            else:
+                print("Invalid source ID provided.")
 
-            source.extract_data()
+            if source is not None:
+                source.extract_data()
+        else:
+            print("{0} - Connection to API {1} failed. "
+                  "Refer to the error logs for details.".format(timestamp, self.API))
 
         response.close()
 
@@ -60,5 +64,5 @@ def log_status_code(status_code, headers):
             raise
 
     f = open("logs\errors.txt", "a+")
-    f.write("[{0}] - {1}\n {2}\n".format(timestamp, status_code, headers))
+    f.write("[{0}] - {1} {2}\n".format(timestamp, status_code, headers))
     f.close()
