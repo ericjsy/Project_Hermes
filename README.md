@@ -19,3 +19,15 @@ user=
 password=
 port=
 ```
+
+Create database:
+
+```
+createdb -h 127.0.0.1 -p 5432 -U postgres -W datatracker
+```
+
+Populate database:
+
+```
+psql -h 127.0.0.1 -f db_setup.sql -d datatracker postgres
+```
