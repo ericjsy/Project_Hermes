@@ -6,7 +6,6 @@ import os
 import errno
 from datetime import datetime
 from datatracker.exchanges.binance import Binance
-from datatracker.exchanges.bithumb import Bithumb
 
 
 class Thread(threading.Thread):
@@ -28,8 +27,6 @@ class Thread(threading.Thread):
 
             if self.ID == "BIN":
                 source = Binance(response)
-            elif self.ID == "BHB":
-                source = Bithumb(response)
             else:
                 print("Invalid source ID provided.")
 
