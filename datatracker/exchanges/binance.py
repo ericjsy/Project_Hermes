@@ -1,10 +1,9 @@
 #!/usr/bin/python
 
 import psycopg2
-import os
-import errno
 from datetime import datetime
 from datatracker.config import config
+from datatracker.log import Log
 
 
 class Binance():
@@ -49,21 +48,8 @@ class Binance():
         except (Exception, psycopg2.DatabaseError) as e:
             print("{0} - Failed to populate database with data. "
                   "Refer to the error logs for details.".format(timestamp))
-            log_db_code(e)
+            log = Log("binance", e, None)
+            log.add_entry()
         finally:
             if conn is not None:
                 conn.close()
-
-
-def log_db_code(error):
-    timestamp = datetime.now().replace(microsecond=0)
-
-    try:
-        os.makedirs("logs")
-    except OSError as e:
-        if e.errno != errno.EEXIST:
-            raise
-
-    f = open("logs\errors.txt", "a+")
-    f.write("[{0}] - {1}".format(timestamp, error))
-    f.close()
