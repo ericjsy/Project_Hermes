@@ -6,15 +6,8 @@ This program scrapes published information from Cryptocurrency Tickers, and
 stores the relevant data into a database for further processing.
 """
 
-from datatracker.thread import Thread
-
-import schedule
 import time
-
-__author__ = "Eric Sy"
-__version__ = "1.0"
-__date__ = "January 27, 2018"
-
+from datatracker.exchanges.exchange import Exchange
 
 # Resources for Cryptocurrency exchange information.
 source = {
@@ -28,21 +21,15 @@ def main():
 
     A thread is created for each resource provided. Threads are passed the
     appropriate API parameters and run concurrently to allow for frequent,
-    and comparable data extractions.
+    and time-sensitive data extractions.
     """
 
-    threads = [Thread(source[i]["Name"], source[i]["ID"], source[i]["API"]) for i in source]
-
-    for j in source:
-        schedule.every(source[j]["Interval"]).seconds.do(insert_data, threads[j - 1])
+    threads = [Exchange(source[i]["Name"], source[i]["ID"], source[i]["API"]) for i in source]
 
     while 1:
-        schedule.run_pending()
-        time.sleep(1)
+        threads[0].run()
+        time.sleep(source[1]["Interval"])
 
-
-def insert_data(thread):
-    thread.run()
 
 if __name__ == "__main__":
     # Execution starting point for when this module is run directly.
