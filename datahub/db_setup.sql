@@ -22,15 +22,24 @@ CREATE OR REPLACE FUNCTION binance.create_partition_and_insert() RETURNS trigger
   $BODY$
     DECLARE
       partition_date TEXT;
-	  partition_location TEXT;
+      partition_date_offset TEXT;
+      partition_location TEXT;
       partition TEXT;
+      partition_offset TEXT;
     BEGIN
       partition_date := to_char(NEW.last_updated,'YYYY_MM');
-	  partition_location := TG_TABLE_SCHEMA || '.' || TG_RELNAME;
+      partition_date_offset := to_char(NEW.last_updated + interval '-1 year','YYYY_MM');
+      partition_location := TG_TABLE_SCHEMA || '.' || TG_RELNAME;
       partition := partition_location || '_' || partition_date;
+      partition_offset := TG_RELNAME || '_' || partition_date_offset;
+      IF EXISTS (SELECT relname FROM pg_class WHERE relname=partition_offset) THEN
+        RAISE NOTICE 'Inheritence revoked from table patition in previous year: %.', partition_offset;
+        EXECUTE 'ALTER TABLE ' || partition_location || '_' || partition_date_offset || ' NO INHERIT ' || partition_location || ';';
+      END IF;
       IF NOT EXISTS(SELECT relname FROM pg_class WHERE relname=partition) THEN
-        RAISE NOTICE 'A partition has been created %',partition;
+        RAISE NOTICE 'A partition has been created: %', partition;
         EXECUTE 'CREATE TABLE ' || partition || ' (check (last_updated = ''' || NEW.last_updated || ''')) INHERITS (' || partition_location || ');';
+        EXECUTE 'CREATE INDEX ' || TG_RELNAME || '_' || partition_date || '_idx ON ' || partition || '(last_updated);';
       END IF;
       EXECUTE 'INSERT INTO ' || partition || ' SELECT(' || partition_location || ' ' || quote_literal(NEW) || ').* RETURNING ID;';
       RETURN NULL;
