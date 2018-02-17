@@ -26,6 +26,12 @@ Create database:
 createdb -h 127.0.0.1 -p 5432 -U postgres -W datatracker
 ```
 
+Create superuser:
+
+```
+createuser -h 127.0.0.1 -p 5432 -U postgres -P -s -e dt_admin
+```
+
 Populate database:
 
 ```
