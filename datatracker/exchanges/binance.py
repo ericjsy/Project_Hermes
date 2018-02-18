@@ -25,7 +25,7 @@ class Binance():
 
             print("{0} - Extracting data...".format(timestamp))
             cur.execute(
-                "INSERT INTO data.raw (symbol, price_change, price_change_percent, prev_close_price, "
+                "INSERT INTO binance.raw_data (symbol, price_change, price_change_percent, prev_close_price, "
                 "last_price, last_qty, bid_price, ask_price, open_price, high_price, low_price, volume, "
                 "quote_volume, last_updated) "
                 "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", (
