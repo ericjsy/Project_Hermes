@@ -16,6 +16,7 @@ class Binance(threading.Thread):
         threading.Thread.__init__(self)
         self.api = "https://api.binance.com/api/v1/ticker/24hr?symbol=EOSBTC"
         self.interval = 5
+        self.active = True
 
     def extract_data(self, response):
         data = response.json()
@@ -62,7 +63,7 @@ class Binance(threading.Thread):
                 conn.close()
 
     def run(self):
-        while 1:
+        while self.active:
             timestamp = datetime.now().replace(microsecond=0)
             response = requests.get(self.api)
 

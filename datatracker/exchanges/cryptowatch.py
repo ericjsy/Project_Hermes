@@ -16,6 +16,7 @@ class Cryptowatch(threading.Thread):
         threading.Thread.__init__(self)
         self.api = "https://api.cryptowat.ch/markets/summaries"
         self.interval = 10
+        self.active = True
 
     def extract_data(self, response):
         data = response.json()
@@ -56,7 +57,7 @@ class Cryptowatch(threading.Thread):
                 conn.close()
 
     def run(self):
-        while 1:
+        while self.active:
             timestamp = datetime.now().replace(microsecond=0)
             response = requests.get(self.api)
 
