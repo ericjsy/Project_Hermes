@@ -1,4 +1,5 @@
 CREATE SCHEMA IF NOT EXISTS binance;
+CREATE SCHEMA IF NOT EXISTS cryptowatch;
 
 CREATE TABLE binance.raw_data
 (ID serial PRIMARY KEY
@@ -11,6 +12,19 @@ CREATE TABLE binance.raw_data
 ,bid_price double precision NOT NULL
 ,ask_price double precision NOT NULL
 ,open_price double precision NOT NULL
+,high_price double precision NOT NULL
+,low_price double precision NOT NULL
+,volume double precision NOT NULL
+,quote_volume double precision NOT NULL
+,last_updated timestamp NOT NULL
+) WITH (OIDS = FALSE);
+
+CREATE TABLE cryptowatch.raw_data
+(ID serial PRIMARY KEY
+,symbol varchar(7) NOT NULL
+,price_change double precision NOT NULL
+,price_change_percent double precision NOT NULL
+,last_price double precision NOT NULL
 ,high_price double precision NOT NULL
 ,low_price double precision NOT NULL
 ,volume double precision NOT NULL
@@ -54,4 +68,8 @@ COST 100;
 
 CREATE TRIGGER partition_insert_trigger
 BEFORE INSERT ON binance.raw_data
+FOR EACH ROW EXECUTE PROCEDURE public.create_partition_and_insert();
+
+CREATE TRIGGER partition_insert_trigger
+BEFORE INSERT ON cryptowatch.raw_data
 FOR EACH ROW EXECUTE PROCEDURE public.create_partition_and_insert();
