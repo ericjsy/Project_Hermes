@@ -2,8 +2,8 @@
 
 """Program execution point.
 
-This program scrapes published information from Cryptocurrency Tickers, and
-stores the relevant data into a database for further processing.
+This program scrapes published information from Cryptocurrency Tickers,
+and stores the relevant data into a database for further processing.
 """
 
 from datatracker.exchanges.binance import Binance
@@ -15,12 +15,13 @@ sources = {
     2: Cryptowatch()
 }
 
+
 def main():
     """Spawn API request threads.
 
-    A thread is created for each resource provided. Threads are passed the
-    appropriate API parameters and run concurrently to allow for frequent,
-    and time-sensitive data extractions.
+    A thread is created for each established resource to allow for
+    concurrent extractions. Each thread has a defined request interval
+    in coordination with the APIs request limit.
     """
 
     for i in sources:
