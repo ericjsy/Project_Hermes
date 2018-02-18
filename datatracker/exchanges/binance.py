@@ -1,17 +1,24 @@
 #!/usr/bin/python
 
 import psycopg2
+import threading
+import requests
+import time
+
 from datetime import datetime
-from datatracker.config import config
-from datatracker.log import Log
+from datatracker.utility.config import config
+from datatracker.utility.log import Log
+from datatracker.utility.connect import connect_to_api
 
 
-class Binance():
-    def __init__(self, response):
-        self.response = response
+class Binance(threading.Thread):
+    def __init__(self):
+        threading.Thread.__init__(self)
+        self.api = "https://api.binance.com/api/v1/ticker/24hr?symbol=EOSBTC"
+        self.interval = 5
 
-    def extract_data(self):
-        data = self.response.json()
+    def extract_data(self, response):
+        data = response.json()
         timestamp = datetime.now().replace(microsecond=0)
 
         conn = None
@@ -48,8 +55,31 @@ class Binance():
         except (Exception, psycopg2.DatabaseError) as e:
             print("{0} - Failed to populate database with data. "
                   "Refer to the error logs for details.".format(timestamp))
-            log = Log("binance", e, None)
+            log = Log(self.getName(), e, None)
             log.add_entry()
         finally:
             if conn is not None:
                 conn.close()
+
+    def run(self):
+        while 1:
+            timestamp = datetime.now().replace(microsecond=0)
+            response = requests.get(self.api)
+
+            print("{0} - Starting thread for {1}".format(timestamp, self.getName()))
+
+            if connect_to_api(self, response) == 1:
+                print("{0} - Connection to API {1} established.".format(timestamp, self.api))
+                self.extract_data(response)
+            else:
+                print("{0} - Connection to API {1} failed. "
+                      "Refer to the error logs for details.".format(timestamp, self.api))
+
+            response.close()
+
+            print("{0} - Exiting thread for {1}".format(timestamp, self.getName()))
+
+            time.sleep(self.interval)
+
+    def getName(self):
+        return self.__class__.__name__

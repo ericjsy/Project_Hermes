@@ -6,16 +6,14 @@ This program scrapes published information from Cryptocurrency Tickers, and
 stores the relevant data into a database for further processing.
 """
 
-from datatracker.exchanges.exchange import Exchange
+from datatracker.exchanges.binance import Binance
+from datatracker.exchanges.cryptowatch import Cryptowatch
 
 # Resources for Cryptocurrency exchange information.
-source = {
-    1: {"ID": "BIN", "Name": "Binance", "Interval": 5,
-        "API": "https://api.binance.com/api/v1/ticker/24hr?symbol=EOSBTC"},
-    2: {"ID": "CYP", "Name": "Cryptowatch", "Interval": 86400,
-        "API": "https://api.cryptowat.ch/markets/summaries"}
+sources = {
+    1: Binance(),
+    2: Cryptowatch()
 }
-
 
 def main():
     """Spawn API request threads.
@@ -25,12 +23,8 @@ def main():
     and time-sensitive data extractions.
     """
 
-    threads = [Exchange(source[i]["Name"], source[i]["ID"],
-                        source[i]["API"], source[i]["Interval"]) for i in source]
-
-    for i in source:
-        threads[i - 1].start()
-
+    for i in sources:
+        sources[i].start()
 
 if __name__ == "__main__":
     # Execution starting point for when this module is run directly.
