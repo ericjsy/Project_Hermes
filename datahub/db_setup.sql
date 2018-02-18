@@ -18,7 +18,7 @@ CREATE TABLE binance.raw_data
 ,last_updated timestamp NOT NULL
 ) WITH (OIDS = FALSE);
 
-CREATE OR REPLACE FUNCTION binance.create_partition_and_insert() RETURNS trigger AS
+CREATE OR REPLACE FUNCTION public.create_partition_and_insert() RETURNS trigger AS
   $BODY$
     DECLARE
       partition_date TEXT;
@@ -54,4 +54,4 @@ COST 100;
 
 CREATE TRIGGER partition_insert_trigger
 BEFORE INSERT ON binance.raw_data
-FOR EACH ROW EXECUTE PROCEDURE binance.create_partition_and_insert();
+FOR EACH ROW EXECUTE PROCEDURE public.create_partition_and_insert();
