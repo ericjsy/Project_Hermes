@@ -6,6 +6,9 @@ This program scrapes published information from Cryptocurrency Tickers,
 and stores the relevant data into a database for further processing.
 """
 
+import sys
+sys.path.append("..")
+
 from datatracker.exchanges.binance import Binance
 from datatracker.exchanges.cryptowatch import Cryptowatch
 
