@@ -32,8 +32,16 @@ Create superuser:
 createuser -h 127.0.0.1 -p 5432 -U postgres -P -s -e dt_admin
 ```
 
-Populate database:
+Set up database:
 
 ```
 psql -h 127.0.0.1 -f db_setup.sql -d datatracker postgres
 ```
+
+Run program (cmd):
+
+```
+python main.py
+```
+
+
