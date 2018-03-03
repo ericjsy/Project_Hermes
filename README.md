@@ -38,7 +38,7 @@ Set up database:
 psql -h 127.0.0.1 -f db_setup.sql -d datatracker postgres
 ```
 
-Run program (cmd):
+Run datatracker program (cmd):
 
 ```
 python main.py
