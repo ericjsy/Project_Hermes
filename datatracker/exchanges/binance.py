@@ -1,5 +1,13 @@
 #!/usr/bin/python
 
+"""Binance cryptocurrency exchange.
+
+Gathers market summaries from Binance and stores the raw information
+into the datahub. The rate limit is set to 1200 requests per minute as
+per the binance github page: https://github.com/binance-exchange/binance-
+official-api-docs/blob/master/rest-api.md.
+"""
+
 import psycopg2
 import threading
 import requests
@@ -13,12 +21,24 @@ from datatracker.utility.connect import connect_to_api
 
 class Binance(threading.Thread):
     def __init__(self):
+        """Thread parameters.
+
+        Sets up API endpoint and request interval in seconds.
+        """
+
         threading.Thread.__init__(self)
         self.api = "https://api.binance.com/api/v1/ticker/24hr?symbol=EOSBTC"
         self.interval = 5
         self.active = True
 
     def extract_data(self, response):
+        """Database insertion method.
+
+        Pulls json data from Binance and inserts the data into the database.
+
+        :param response: the API response
+        """
+
         data = response.json()
         timestamp = datetime.now().replace(microsecond=0)
 
@@ -33,8 +53,9 @@ class Binance(threading.Thread):
 
             print("{0} - Extracting data...".format(timestamp))
             cur.execute(
-                "INSERT INTO binance.raw_data (symbol, price_change, price_change_percent, prev_close_price, "
-                "last_price, last_qty, bid_price, ask_price, open_price, high_price, low_price, volume, "
+                "INSERT INTO binance.raw_data (symbol, price_change, "
+                "price_change_percent, prev_close_price, last_price, last_qty, "
+                "bid_price, ask_price, open_price, high_price, low_price, volume, "
                 "quote_volume, last_updated) "
                 "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", (
                     data["symbol"],
@@ -63,6 +84,11 @@ class Binance(threading.Thread):
                 conn.close()
 
     def run(self):
+        """Initiates thread actions.
+
+        Pings the API and handles the response.
+        """
+
         while self.active:
             timestamp = datetime.now().replace(microsecond=0)
             response = requests.get(self.api)
@@ -83,4 +109,11 @@ class Binance(threading.Thread):
             time.sleep(self.interval)
 
     def getName(self):
+        """Name retrieval helper function.
+
+        Retrieves the name of the cryptocurrency exchange.
+
+        :return: the class name
+        """
+
         return self.__class__.__name__

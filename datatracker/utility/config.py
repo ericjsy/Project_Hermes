@@ -1,14 +1,24 @@
 #!/usr/bin/python
 
-"""Configure database connection settings.
+"""Configures datahub connection settings.
 
-Passes on the connection string to the
+Separates the database logic by passing on the credentials to establish a
+successful connection from a separate file.
 """
 
 from configparser import ConfigParser
 
 
 def config(filename="database.ini", section="postgresql"):
+    """Database connection method.
+
+    Passes on the connection string from a separate file.
+
+    :param filename: file that contains the database information
+    :param section: the database type
+    :return: the connection string
+    """
+
     parser = ConfigParser()
     parser.read(filename)
 

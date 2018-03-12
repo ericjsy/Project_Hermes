@@ -2,7 +2,7 @@
 
 """Program execution point.
 
-This program scrapes published information from Cryptocurrency Tickers,
+Datatracker scrapes published information from Cryptocurrency Tickers,
 and stores the relevant data into a database for further processing.
 """
 

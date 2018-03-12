@@ -12,12 +12,12 @@ def connect_to_api(self, response):
     """Checks the API response status code.
 
     Determines if the request returns a 2XX status code.
-    An invalid status code is recorded into a log for
+    An invalid status code is recorded into a log file for
     troubleshooting and closes the connection.
 
     :param self: object-binding reference
     :param response: server response from an API request
-    :return: state of the request
+    :return: request success indicator
     """
 
     try:

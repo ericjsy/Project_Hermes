@@ -1,5 +1,12 @@
 #!/usr/bin/python
 
+"""Cryptowatch cryptocurrency exchange.
+
+Gathers market summaries from Cryptowatch and stores the raw information
+into the datahub. The rate limit is set to 8 seconds of CPU time per hour
+as per the cryptowatch documentation: https://cryptowat.ch/docs/api.
+"""
+
 import psycopg2
 import threading
 import requests
@@ -13,12 +20,25 @@ from datatracker.utility.connect import connect_to_api
 
 class Cryptowatch(threading.Thread):
     def __init__(self):
+        """Thread parameters.
+
+        Sets up API endpoint and request interval in seconds.
+        """
+
         threading.Thread.__init__(self)
         self.api = "https://api.cryptowat.ch/markets/summaries"
         self.interval = 10
         self.active = True
 
     def extract_data(self, response):
+        """Database insertion method.
+
+        Pulls json data from Cryptowatch and inserts the data into the
+        database.
+
+        :param response: the API response
+        """
+
         data = response.json()
         timestamp = datetime.now().replace(microsecond=0)
 
@@ -33,8 +53,9 @@ class Cryptowatch(threading.Thread):
 
             print("{0} - Extracting data...".format(timestamp))
             cur.execute(
-                "INSERT INTO cryptowatch.raw_data (symbol, price_change, price_change_percent, last_price, "
-                "high_price, low_price, volume, quote_volume, last_updated) "
+                "INSERT INTO cryptowatch.raw_data (symbol, price_change, "
+                "price_change_percent, last_price, high_price, low_price, "
+                "volume, quote_volume, last_updated) "
                 "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);", (
                     "EOSBTC",
                     data["result"]["bitfinex:eoseth"]["price"]["change"]["absolute"],
@@ -57,6 +78,11 @@ class Cryptowatch(threading.Thread):
                 conn.close()
 
     def run(self):
+        """Initiates thread actions.
+
+        Pings the API and handles the response.
+        """
+
         while self.active:
             timestamp = datetime.now().replace(microsecond=0)
             response = requests.get(self.api)
@@ -77,4 +103,11 @@ class Cryptowatch(threading.Thread):
             time.sleep(self.interval)
 
     def getName(self):
+        """Name retrieval helper function.
+
+        Retrieves the name of the cryptocurrency exchange.
+
+        :return: the class name
+        """
+
         return self.__class__.__name__
